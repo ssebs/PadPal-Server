@@ -2,6 +2,7 @@
 package util
 
 import (
+	"os"
 	"testing"
 
 	"github.com/gomarkdown/markdown"
@@ -25,6 +26,21 @@ func ParseMDToHTML(md []byte) []byte {
 	renderer := html.NewRenderer(opts)
 
 	return markdown.Render(doc, renderer)
+}
+
+func GetFilenamesInDir(d string) ([]string, error) {
+	filenames := make([]string, 0)
+	f, err := os.Open(d)
+	if err != nil {
+		return filenames, err
+	}
+
+	filenames, err = f.Readdirnames(0)
+	if err != nil {
+		return filenames, err
+	}
+
+	return filenames, nil
 }
 
 // TESTING STUFF //

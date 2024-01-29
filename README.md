@@ -88,6 +88,8 @@ This repo is a part of a larger PadPal project. The following is a list of the r
   - JWT
   - See [REST API Doc](./REST-API.md)
 - Tag support
+  - favorites
+  - user given
 - Keep versions of each note
   - Allow for rollback
   - Git?
@@ -144,3 +146,15 @@ This repo is a part of a larger PadPal project. The following is a list of the r
 ## External references / docs
 - https://pkg.go.dev/github.com/golang-jwt/jwt#example-package-GetTokenViaHTTP
 - UNRAID https://selfhosters.net/docker/templating/templating/#114-shave-off-the-xml
+- https://pkg.go.dev/github.com/go-git/go-git/v5
+
+## Version history for files (for file_provider.go)
+- Files live in a directory
+  - Active files live in `active` folder
+  - Archived files move into `archive` folder
+- When saving a file:
+  - save to disk
+  - git add \<file\>;git commit -m `filename-v$version$date`;
+  - bump version
+  - return Note with new version?
+- 
