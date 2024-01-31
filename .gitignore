@@ -22,3 +22,4 @@ build/
 go.work
 
 data/example/*
+data/example/.git/
