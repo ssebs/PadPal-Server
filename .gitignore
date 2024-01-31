@@ -21,5 +21,6 @@ build/
 # Go workspace file
 go.work
 
+data/example
 data/example/*
 data/example/.git/
