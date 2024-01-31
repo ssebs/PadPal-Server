@@ -26,7 +26,9 @@ DELETE
 */
 
 // GET //
+
 // GETNotesHandler uses a CRUDProvider and handles GET /notes?q=
+// To be used in gin's router.GET()
 func GETNotesHandler(provider data.CRUDProvider) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		qry := c.Query("q")
@@ -41,6 +43,7 @@ func GETNotesHandler(provider data.CRUDProvider) gin.HandlerFunc {
 }
 
 // GETNoteByIDHandler uses a CRUDProvider and handles GET /notes/:id
+// To be used in gin's router.GET()
 func GETNoteByIDHandler(provider data.CRUDProvider) gin.HandlerFunc {
 	// Get ID from param
 	return func(c *gin.Context) {
@@ -61,7 +64,9 @@ func GETNoteByIDHandler(provider data.CRUDProvider) gin.HandlerFunc {
 }
 
 // POST //
+
 // POSTNotesHandler uses a CRUDProvider and handles POST /notes
+// To be used in gin's router.GET()
 func POSTNotesHandler(provider data.CRUDProvider) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// Map post data to NoteBind, then create Note from that
@@ -83,12 +88,14 @@ func POSTNotesHandler(provider data.CRUDProvider) gin.HandlerFunc {
 }
 
 // PUT //
+// To be used in gin's router.PUT()
 func PUTNoteHandler(provider data.CRUDProvider) gin.HandlerFunc {
 	return func(c *gin.Context) {
 	}
 }
 
 // DELETE //
+// To be used in gin's router.DELETE()
 func DELETENoteHandler(provider data.CRUDProvider) gin.HandlerFunc {
 	return func(c *gin.Context) {
 	}

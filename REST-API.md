@@ -3,7 +3,7 @@
 This will explain what endpoints are available for PadPal-Server, and what they'll do.
 
 ## Notes
-- `/notes`
+- [`/notes`](/notes)
   - **Required**:
     - JWT header to get userID
   - `POST`

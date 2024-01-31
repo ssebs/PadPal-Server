@@ -20,12 +20,13 @@ type FileProvider struct {
 // NewFileProvider
 // make sure to include the last / for the dir!
 func NewFileProvider(dir string) (*FileProvider, error) {
+	// Check dir exists
 	d := filepath.Dir(dir)
 	if _, err := os.Stat(d); os.IsNotExist(err) {
 		return nil, err
 	}
 
-	// Check if we're loading an existing dir or creating new
+	// Load notes from existing dir + check if we're loading an existing dir or creating new
 	_notes, err := initFileProvider(d)
 	if err != nil {
 		return nil, err
@@ -39,6 +40,8 @@ func NewFileProvider(dir string) (*FileProvider, error) {
 	return fp, nil
 }
 
+// initFileProvider will load notes from existing dir +
+// Checks if we're loading an existing dir or creating new git dir
 func initFileProvider(d string) (map[guid.Guid]*Note, error) {
 	_notes := make(map[guid.Guid]*Note)
 

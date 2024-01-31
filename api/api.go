@@ -18,11 +18,6 @@ func HandleAndServe(host string, port int) {
 
 	// TODO: replace_me with an env var or CLI flag
 	provider := data.NewSampleProvider()
-	provider2, err := data.NewFileProvider("./data/example/")
-	if err != nil {
-		log.Fatal(err)
-	}
-	provider2.SaveNote(&data.Note{Title: "test"})
 
 	// init gin + HTTP handlers
 	router := gin.Default()
