@@ -28,6 +28,7 @@ func ParseMDToHTML(md []byte) []byte {
 	return markdown.Render(doc, renderer)
 }
 
+// GetFilenamesInDir will return a list of filenames from a directory
 func GetFilenamesInDir(d string) ([]string, error) {
 	filenames := make([]string, 0)
 	f, err := os.Open(d)
@@ -39,8 +40,28 @@ func GetFilenamesInDir(d string) ([]string, error) {
 	if err != nil {
 		return filenames, err
 	}
-
 	return filenames, nil
+}
+
+// GetFilesInDir will return a list of filenames from a directory
+func GetFilesInDir(d string) ([]*os.File, error) {
+	files := make([]*os.File, 0)
+
+	// Get filenames first
+	filenames, err := GetFilenamesInDir(d)
+	if err != nil {
+		return nil, err
+	}
+
+	// Return files from filenames
+	for _, file := range filenames {
+		f, err := os.Open(file)
+		if err != nil {
+			return nil, err
+		}
+		files = append(files, f)
+	}
+	return files, nil
 }
 
 // TESTING STUFF //

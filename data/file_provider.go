@@ -7,12 +7,14 @@ import (
 	"sync"
 
 	"github.com/beevik/guid"
+	"github.com/go-git/go-git/v5"
 	"github.com/ssebs/padpal-server/util"
 )
 
 // FileProvider is a file directory implementation of CRUDProvider
 type FileProvider struct {
 	fullPath string
+	repo     *git.Repository
 	notes    map[guid.Guid]*Note
 	mutex    sync.RWMutex
 }
@@ -27,7 +29,7 @@ func NewFileProvider(dir string) (*FileProvider, error) {
 	}
 
 	// Load notes from existing dir + check if we're loading an existing dir or creating new
-	_notes, err := initFileProvider(d)
+	_repo, _notes, err := initFileProvider(d)
 	if err != nil {
 		return nil, err
 	}
@@ -35,6 +37,7 @@ func NewFileProvider(dir string) (*FileProvider, error) {
 	fp := &FileProvider{
 		fullPath: d,
 		notes:    _notes,
+		repo:     _repo,
 	}
 
 	return fp, nil
@@ -42,21 +45,32 @@ func NewFileProvider(dir string) (*FileProvider, error) {
 
 // initFileProvider will load notes from existing dir +
 // Checks if we're loading an existing dir or creating new git dir
-func initFileProvider(d string) (map[guid.Guid]*Note, error) {
-	_notes := make(map[guid.Guid]*Note)
+func initFileProvider(d string) (*git.Repository, map[guid.Guid]*Note, error) {
+	notes := make(map[guid.Guid]*Note)
 
-	// Check if we're in a git repo
-
-	// If we are, load notes from "active" folder
-
-	// If not, init git dir,
-	if err := util.InitGitDir(d); err != nil {
-		return nil, err
+	// Init git dir + get repo
+	repo, err := util.InitGitDir(d)
+	if err != nil {
+		return nil, notes, err
 	}
 
-	// ...then load notes from "active folder"
+	// TODO: MOVE TO LISTNOTES + READFILES + PLAN THIS OUT!!
 
-	return _notes, nil
+	// // ...then load notes from "active folder"
+	// files, err := util.GetFilesInDir(d)
+	// if err != nil {
+	// 	return nil, notes, err
+	// }
+	// // Read contents of file, parse into Note
+	// for _, f := range files {
+	// 	contents, err := io.ReadAll(f)
+	// 	if err != nil {
+	// 		return nil, notes, err
+	// 	}
+	// 	notes[]
+	// }
+
+	return repo, notes, nil
 }
 
 // CREATE //
