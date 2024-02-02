@@ -15,7 +15,8 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	provider2.SaveNote(&data.Note{Title: "test"})
+	testNote := data.NewNote("Test-Note", "Seb", "# test-note\nGotta love me some test, *amirite*\n")
+	provider2.SaveNote(testNote)
 
 	// api.HandleAndServe("", 5000)
 }

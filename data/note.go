@@ -3,9 +3,11 @@ package data
 
 import (
 	"encoding/json"
+	"fmt"
 	"time"
 
 	"github.com/beevik/guid"
+	"github.com/mrz1836/go-sanitize"
 )
 
 // NoteBind used for form data to create a Note
@@ -43,6 +45,16 @@ func NewNote(title, author, contents string) *Note {
 		Version:     1,
 		Active:      true,
 	}
+}
+
+// GetFilename generates a filename from the GUID-Title-Author
+// formats as "id-title-author.md"
+func (n *Note) GetFilename() string {
+	_author := sanitize.PathName(n.Author)
+	_title := sanitize.PathName(n.Title)
+
+	// id-title-author.md
+	return fmt.Sprintf("%s-%s-%s.md", n.ID.String(), _title, _author)
 }
 
 // NewNoteFromBind will create a new note from a mapped NoteBind

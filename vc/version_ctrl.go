@@ -1,12 +1,15 @@
 // version_ctrl.go - manages version control stuff
-package util
+package vc
 
 import (
 	"errors"
 	"fmt"
+	"time"
 
 	"github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/config"
+	"github.com/go-git/go-git/v5/plumbing/object"
+	"github.com/ssebs/padpal-server/util"
 )
 
 // InitGitDir will check if a git repo for d exists
@@ -14,7 +17,7 @@ import (
 func InitGitDir(d string) (*git.Repository, error) {
 	foundGitRepo := false
 	// Get files
-	files, err := GetFilenamesInDir(d)
+	files, err := util.GetFilenamesInDir(d)
 	if err != nil {
 		return nil, err
 	}
@@ -49,6 +52,29 @@ func InitGitDir(d string) (*git.Repository, error) {
 }
 
 // AddCommitFile will git add & git commit a file to the repo
-func AddCommitFile(file string) error {
+func AddCommitFile(file, author string, repo *git.Repository) error {
+	// Create staging area / worktree
+	wt, err := repo.Worktree()
+	if err != nil {
+		return fmt.Errorf("failed to create staging area within repo, err: %s", err.Error())
+	}
+	// Add the file
+	_, err = wt.Add(file)
+	if err != nil {
+		return fmt.Errorf("failed to add file, err: %s", err.Error())
+	}
+	// Commit the file
+	commitMsg := fmt.Sprintf("Commiting %s", file)
+	_, err = wt.Commit(commitMsg, &git.CommitOptions{
+		Author: &object.Signature{
+			Name:  author,
+			Email: author + "@example.com",
+			When:  time.Now().UTC(),
+		},
+	})
+	if err != nil {
+		return fmt.Errorf("failed to commit file, err: %s", err.Error())
+	}
+
 	return nil
 }
