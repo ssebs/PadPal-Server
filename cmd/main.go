@@ -11,12 +11,15 @@ import (
 func main() {
 	fmt.Println("PadPal Server")
 
-	provider2, err := data.NewFileProvider("./data/example/")
+	provider2, err := data.NewFileProvider(`F:\LocalProgramming\_DATA_TEST_\example`)
 	if err != nil {
 		log.Fatal(err)
 	}
 	testNote := data.NewNote("Test-Note", "Seb", "# test-note\nGotta love me some test, *amirite*\n")
-	provider2.SaveNote(testNote)
+	err = provider2.SaveNote(testNote)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	// api.HandleAndServe("", 5000)
 }

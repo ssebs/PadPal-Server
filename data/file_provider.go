@@ -23,7 +23,7 @@ type FileProvider struct {
 // make sure to include the last / for the dir!
 func NewFileProvider(dir string) (*FileProvider, error) {
 	// Check dir exists
-	d := filepath.Dir(dir)
+	d := filepath.Clean(dir)
 	if _, err := os.Stat(d); os.IsNotExist(err) {
 		return nil, err
 	}
@@ -56,21 +56,29 @@ func initFileProvider(d string) (*git.Repository, error) {
 }
 
 // CREATE //
-// Save note to disk
+// Save note to disk, under p.fullPath/active/<file>.md
 func (p *FileProvider) SaveNote(note *Note) error {
 	p.mutex.Lock()
 	defer p.mutex.Unlock()
 
-	filename := p.fullPath + "/" + note.GetFilename()
+	// don't need fullpath for git stuff
+	localFileName := filepath.Join("active/" + filepath.Clean(note.GetFilename()))
+	fullFileName := filepath.Join(p.fullPath + "/active/" + filepath.Clean(note.GetFilename()))
 
-	// save md file to disk
-	if err := os.WriteFile(filename, []byte(note.Contents), 0644); err != nil {
+	// save md file to disk (need fullpath)
+	if err := os.WriteFile(fullFileName, []byte(note.Contents), 0644); err != nil {
 		return err
 	}
+
 	// git add & commit
-	if err := vc.AddCommitFile(filename, note.Author, p.repo); err != nil {
+	if err := vc.AddCommitFile(localFileName, note.Author, p.repo); err != nil {
 		return err
 	}
+
+	// // git add . & commit
+	// if err := vc.AddCommitDir("active/", note.Author, p.repo); err != nil {
+	// 	return err
+	// }
 
 	return nil
 }
