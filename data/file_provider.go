@@ -7,14 +7,13 @@ import (
 	"sync"
 
 	"github.com/beevik/guid"
-	"github.com/go-git/go-git/v5"
 	"github.com/ssebs/padpal-server/vc"
 )
 
 // FileProvider is a file directory implementation of CRUDProvider
 type FileProvider struct {
 	fullPath string
-	repo     *git.Repository
+	vc       *vc.VersionControl
 	notes    map[guid.Guid]*Note
 	mutex    sync.RWMutex
 }
@@ -29,7 +28,7 @@ func NewFileProvider(dir string) (*FileProvider, error) {
 	}
 
 	// Load notes from existing dir + check if we're loading an existing dir or creating new
-	_repo, err := initFileProvider(d)
+	_vc, err := vc.NewVersionControl(d)
 	if err != nil {
 		return nil, err
 	}
@@ -37,22 +36,10 @@ func NewFileProvider(dir string) (*FileProvider, error) {
 	fp := &FileProvider{
 		fullPath: d,
 		notes:    make(map[guid.Guid]*Note),
-		repo:     _repo,
+		vc:       _vc,
 	}
 	// TODO: load notes in ListNotes/LoadNotes
 	return fp, nil
-}
-
-// initFileProvider will load notes from existing dir +
-// Checks if we're loading an existing dir or creating new git dir
-func initFileProvider(d string) (*git.Repository, error) {
-	// Init git dir + get repo
-	repo, err := vc.InitGitDir(d)
-	if err != nil {
-		return nil, err
-	}
-
-	return repo, nil
 }
 
 // CREATE //
@@ -71,12 +58,13 @@ func (p *FileProvider) SaveNote(note *Note) error {
 	}
 
 	// git add & commit
-	if err := vc.AddCommitFile(localFileName, note.Author, p.repo); err != nil {
+	if err := p.vc.AddCommit(localFileName, note.Author, false); err != nil {
 		return err
 	}
 
+	// TODO: FIXME
 	// // git add . & commit
-	// if err := vc.AddCommitDir("active/", note.Author, p.repo); err != nil {
+	// if err := p.vc.AddCommit("active/", note.Author, true); err != nil {
 	// 	return err
 	// }
 
