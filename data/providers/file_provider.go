@@ -2,6 +2,7 @@
 package providers
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -35,21 +36,24 @@ func NewFileProvider(dir string) (*FileProvider, error) {
 		dirPath: d,
 		notes:   make(map[guid.Guid]*data.Note),
 	}
-	// TODO: load notes in ListNotes/LoadNotes
+
+	// load notes in LoadNotes
 	notes, err := fp.LoadNotes("")
 	if err != nil {
 		return fp, err
 	}
-	fmt.Println("Loading all notes:")
-	fmt.Println(notes)
+
 	// add notes to the map of notes from the GUID
-	// for range...
+	for _, n := range notes {
+		fp.notes[*n.ID] = n
+	}
 
 	return fp, nil
 }
 
 // CREATE //
-// Save note to disk, under p.fullPath/active/<file>.md
+// Save note to disk, under p.fullPath/<file>.md
+// Filename will be special, see data.Note.GetFilename()
 func (p *FileProvider) SaveNote(note *data.Note) error {
 	p.mutex.Lock()
 	defer p.mutex.Unlock()
@@ -70,6 +74,7 @@ func (p *FileProvider) SaveNote(note *data.Note) error {
 
 // READ //
 // LoadNotes loads notes from a query & read them into memory
+// If query is empty, load all notes. Otherwise, filter by the query string
 func (p *FileProvider) LoadNotes(query string) ([]*data.Note, error) {
 	p.mutex.Lock()
 	defer p.mutex.Unlock()
@@ -90,6 +95,7 @@ func (p *FileProvider) LoadNotes(query string) ([]*data.Note, error) {
 	}
 
 	// Query / filter them
+	// TODO: implement
 
 	return notes, nil
 }
@@ -98,17 +104,27 @@ func (p *FileProvider) LoadNotes(query string) ([]*data.Note, error) {
 func (p *FileProvider) LoadNote(id guid.Guid) (*data.Note, error) {
 	p.mutex.Lock()
 	defer p.mutex.Unlock()
-	return nil, nil
+
+	// Check if the GUID is in the map
+	n, ok := p.notes[id]
+	if ok {
+		return n, nil
+	}
+	// If not, check the fs
+	// TODO: implement
+
+	// If nothing exists, return filenotfound
+	return nil, fmt.Errorf("%s not found in %s", id.String(), p.dirPath)
 }
 
 // List all versions of a note
 func (p *FileProvider) ListNoteVersions(id guid.Guid) ([]int, error) {
-	return nil, nil
+	return nil, errors.New("method not implemented")
 }
 
 // Load note from disk by guid ID + version
 func (p *FileProvider) LoadNoteVersion(id guid.Guid, version int) (*data.Note, error) {
-	return nil, nil
+	return nil, errors.New("method not implemented")
 }
 
 // UPDATE //
@@ -116,12 +132,13 @@ func (p *FileProvider) LoadNoteVersion(id guid.Guid, version int) (*data.Note, e
 func (p *FileProvider) UpdateNote(id guid.Guid, updatedNote *data.Note) error {
 	p.mutex.Lock()
 	defer p.mutex.Unlock()
-	return nil
+
+	return errors.New("method not implemented")
 }
 
 // Restore a Note to a specific version, append version #
 func (p *FileProvider) RestoreNote(id guid.Guid, version int) (*data.Note, error) {
-	return nil, nil
+	return nil, errors.New("method not implemented")
 }
 
 // DELETE //
@@ -129,5 +146,5 @@ func (p *FileProvider) RestoreNote(id guid.Guid, version int) (*data.Note, error
 func (p *FileProvider) DeleteNote(id guid.Guid) error {
 	p.mutex.Lock()
 	defer p.mutex.Unlock()
-	return nil
+	return errors.New("method not implemented")
 }
