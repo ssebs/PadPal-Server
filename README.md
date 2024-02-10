@@ -92,6 +92,7 @@ This repo is a part of a larger PadPal project. The following is a list of the r
   - favorites
   - user given
 - Keep versions of each note
+- Move checked boxes to "completed" section at the bottom
   - Allow for rollback
   - Git?
 - Host Web client on the server
@@ -108,6 +109,7 @@ This repo is a part of a larger PadPal project. The following is a list of the r
 - Web client:
   - use tailwindcss
   - react? maybe preact
+  - run on the server
 - CLI:
   - golang CLI app
   - ./cli -login 
@@ -151,14 +153,3 @@ This repo is a part of a larger PadPal project. The following is a list of the r
 - https://pkg.go.dev/github.com/golang-jwt/jwt#example-package-GetTokenViaHTTP
 - UNRAID https://selfhosters.net/docker/templating/templating/#114-shave-off-the-xml
 - https://pkg.go.dev/github.com/go-git/go-git/v5
-
-## Version history for files (for file_provider.go)
-- Files live in a directory
-  - Active files live in `active` folder
-  - Archived files move into `archive` folder
-- When saving a file:
-  - save to disk
-  - git add \<file\>;git commit -m `filename-v$version$date`;
-  - bump version
-  - return Note with new version?
-- 

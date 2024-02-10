@@ -43,7 +43,7 @@ func GetFilenamesInDir(d string) ([]string, error) {
 	return filenames, nil
 }
 
-// GetFilesInDir will return a list of filenames from a directory
+// GetFilesInDir will return a list of files from a directory
 func GetFilesInDir(d string) ([]*os.File, error) {
 	files := make([]*os.File, 0)
 
@@ -59,6 +59,7 @@ func GetFilesInDir(d string) ([]*os.File, error) {
 		if err != nil {
 			return nil, err
 		}
+		defer f.Close()
 		files = append(files, f)
 	}
 	return files, nil

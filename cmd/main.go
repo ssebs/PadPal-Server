@@ -2,26 +2,34 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"log"
 
-	"github.com/ssebs/padpal-server/api"
 	"github.com/ssebs/padpal-server/data"
 	"github.com/ssebs/padpal-server/data/providers"
 )
 
 func main() {
 	fmt.Println("PadPal Server")
+	// TODO: Add provider param
+	dir := flag.String("dir", ".", "File Provider dir path. Include trailing /")
+	flag.Parse()
 
-	provider2, err := providers.NewFileProvider(`F:\LocalProgramming\_DATA_TEST_\example`)
+	// Init CRUDProvider
+	fp, err := providers.NewFileProvider(*dir)
 	if err != nil {
 		log.Fatal(err)
 	}
-	testNote := data.NewNote("Test-Note", "Seb", "# test-note\nGotta love me some test, *amirite*\n")
-	err = provider2.SaveNote(testNote)
+
+	// TEST: save a note
+	err = fp.SaveNote(
+		data.NewNote("Test-Note", "Seb", "# test-note\nGotta love me some test, *amirite*\n"),
+	)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	api.HandleAndServe("", 5000)
+	// TODO: Add provider param to handleandserve
+	// api.HandleAndServe("", 5000)
 }

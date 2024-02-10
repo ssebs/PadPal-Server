@@ -40,9 +40,9 @@ func (p *SampleProvider) SaveNote(note *data.Note) error {
 	return nil
 }
 
-// ListNotes lists all active notes that match the query
+// LoadAllNotes lists all active notes that match the query
 // Errors if there are no notes found
-func (p *SampleProvider) ListNotes(query string) ([]*data.Note, error) {
+func (p *SampleProvider) LoadAllNotes(query string) ([]*data.Note, error) {
 	p.mutex.RLock()
 	defer p.mutex.RUnlock()
 

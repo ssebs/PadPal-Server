@@ -24,10 +24,10 @@ func TestCRUDProvider(t *testing.T) {
 		t.Errorf("SaveNote failed: %v", err)
 	}
 
-	// Test ListNotes
-	notes, err := sampleProvider.ListNotes("")
+	// Test LoadAllNotes
+	notes, err := sampleProvider.LoadAllNotes("")
 	if err != nil {
-		t.Errorf("ListNotes failed: %v", err)
+		t.Errorf("LoadAllNotes failed: %v", err)
 	}
 	if len(notes) != 1 {
 		t.Errorf("Expected 1 note, got %d", len(notes))
