@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/ssebs/padpal-server/data"
+	"github.com/ssebs/padpal-server/api"
 	"github.com/ssebs/padpal-server/data/providers"
 )
 
@@ -22,14 +22,13 @@ func main() {
 		log.Fatal(err)
 	}
 
-	// TEST: save a note
-	err = fp.SaveNote(
-		data.NewNote("Test-Note", "Seb", "# test-note\nGotta love me some test, *amirite*\n"),
-	)
-	if err != nil {
-		log.Fatal(err)
-	}
+	// // TEST: save a note
+	// err = fp.SaveNote(
+	// 	data.NewNote("Test-Note", "Seb", "# test-note\nGotta love me some test, *amirite*\n"),
+	// )
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
 
-	// TODO: Add provider param to handleandserve
-	// api.HandleAndServe("", 5000)
+	api.HandleAndServe("", 5000, fp)
 }

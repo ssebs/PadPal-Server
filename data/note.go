@@ -7,6 +7,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 	"time"
 
@@ -110,6 +111,29 @@ func (n *Note) GetFilename() string {
 	return fmt.Sprintf("%s_%s_%s.md", n.ID.String(), _author, _title)
 }
 
+// SearchMatch will check if a search query will match a note or not
+// If query is empty, match. Supports * wildcards
+func (n *Note) SearchMatch(query string) bool {
+	if query == "" {
+		query = "*"
+	}
+	query = strings.ToLower(query)
+
+	if found, _ := regexp.MatchString(wildCardToRegexp(query), strings.ToLower(n.ID.String())); found {
+		return true
+	}
+	if found, _ := regexp.MatchString(wildCardToRegexp(query), strings.ToLower(n.Title)); found {
+		return true
+	}
+	if found, _ := regexp.MatchString(wildCardToRegexp(query), strings.ToLower(n.Author)); found {
+		return true
+	}
+	if found, _ := regexp.MatchString(wildCardToRegexp(query), strings.ToLower(n.Contents)); found {
+		return true
+	}
+	return false
+}
+
 // MarshalJSON customizes the JSON marshaling for the Note struct.
 // The ID field is represented as a string in the JSON output.
 func (n *Note) MarshalJSON() ([]byte, error) {
@@ -121,4 +145,21 @@ func (n *Note) MarshalJSON() ([]byte, error) {
 		ID:    n.ID.String(),
 		Alias: (*Alias)(n),
 	})
+}
+
+// wildCardToRegexp converts a wildcard pattern to a regular expression pattern.
+func wildCardToRegexp(pattern string) string {
+	var result strings.Builder
+	for i, literal := range strings.Split(pattern, "*") {
+
+		// Replace * with .*
+		if i > 0 {
+			result.WriteString(".*")
+		}
+
+		// Quote any regular expression meta characters in the
+		// literal text.
+		result.WriteString(regexp.QuoteMeta(literal))
+	}
+	return result.String()
 }

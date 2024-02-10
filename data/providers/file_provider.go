@@ -80,6 +80,8 @@ func (p *FileProvider) LoadNotes(query string) ([]*data.Note, error) {
 	defer p.mutex.Unlock()
 	notes := make([]*data.Note, 0)
 
+	// TODO: check in p.notes before searching disk!
+
 	// Get all the Files
 	files, err := util.GetFilesInDir(p.dirPath)
 	if err != nil {
@@ -91,10 +93,13 @@ func (p *FileProvider) LoadNotes(query string) ([]*data.Note, error) {
 		if err != nil {
 			return nil, fmt.Errorf("failed to parse note from file %s, err:%s", f.Name(), err.Error())
 		}
-		notes = append(notes, n)
+
+		// Query / filter them
+		if n.SearchMatch(query) {
+			notes = append(notes, n)
+		}
 	}
 
-	// Query / filter them
 	// TODO: implement
 
 	return notes, nil

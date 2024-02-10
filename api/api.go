@@ -13,12 +13,10 @@ import (
 
 // HandleAndServe will handle the routes and serve HTTP
 // contains a list of route handlers
-func HandleAndServe(host string, port int) {
+func HandleAndServe(host string, port int, provider providers.CRUDProvider) {
 	hostPort := fmt.Sprintf("%s:%d", host, port)
 
-	// TODO: replace_me with an env var or CLI flag
-	provider := providers.NewSampleProvider()
-
+	// TODO: stop using gin
 	// init gin + HTTP handlers
 	router := gin.Default()
 	initHandlers(router, provider)

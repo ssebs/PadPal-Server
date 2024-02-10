@@ -9,6 +9,8 @@ import (
 
 // RootHandler renders the REST-API.md file as HTML for /
 func RootHandler(c *gin.Context) {
+	// TODO: replace with rendering the Web App
+
 	// get contents of ./REST-API.md and return
 	md, err := os.ReadFile("./REST-API.md")
 	if err != nil {

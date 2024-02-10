@@ -46,6 +46,7 @@ This repo is a part of a larger PadPal project. The following is a list of the r
     - [ ] Update
     - [ ] Delete
   - [ ] File Provider
+    - [ ] Add cache
 - [ ] Implement Version history
   - [ ] git?
   - [ ] db?

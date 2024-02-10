@@ -34,7 +34,7 @@ func GETNotesHandler(provider providers.CRUDProvider) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		qry := c.Query("q")
 
-		notes, err := provider.LoadAllNotes(qry)
+		notes, err := provider.LoadNotes(qry)
 		if err != nil {
 			ErrorHandler(404, err, c)
 			return

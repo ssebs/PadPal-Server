@@ -17,8 +17,8 @@ type CRUDProvider interface {
 	// TODO: CopyNote(id guid.Guid) error
 
 	// READ //
-	// List all active notes
-	LoadAllNotes(query string) ([]*data.Note, error)
+	// Load notes by query. If empty, load all
+	LoadNotes(query string) ([]*data.Note, error)
 	// Load note from disk by guid ID
 	LoadNote(id guid.Guid) (*data.Note, error)
 	// List all versions of a note
