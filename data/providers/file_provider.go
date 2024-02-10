@@ -2,12 +2,14 @@
 package providers
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 	"sync"
 
 	"github.com/beevik/guid"
 	"github.com/ssebs/padpal-server/data"
+	"github.com/ssebs/padpal-server/util"
 )
 
 // FileProvider is a file directory implementation of CRUDProvider
@@ -34,6 +36,14 @@ func NewFileProvider(dir string) (*FileProvider, error) {
 		notes:   make(map[guid.Guid]*data.Note),
 	}
 	// TODO: load notes in ListNotes/LoadNotes
+	notes, err := fp.LoadNotes("")
+	if err != nil {
+		return fp, err
+	}
+	fmt.Println("Loading all notes:")
+	fmt.Println(notes)
+	// add notes to the map of notes from the GUID
+	// for range...
 
 	return fp, nil
 }
@@ -63,28 +73,25 @@ func (p *FileProvider) SaveNote(note *data.Note) error {
 func (p *FileProvider) LoadNotes(query string) ([]*data.Note, error) {
 	p.mutex.Lock()
 	defer p.mutex.Unlock()
+	notes := make([]*data.Note, 0)
+
 	// Get all the Files
+	files, err := util.GetFilesInDir(p.dirPath)
+	if err != nil {
+		return nil, fmt.Errorf("failed to load notes in %s, err:%s", p.dirPath, err.Error())
+	}
+	// Parse the file and add to notes
+	for _, f := range files {
+		n, err := data.NewNoteFromFile(f)
+		if err != nil {
+			return nil, fmt.Errorf("failed to parse note from file %s, err:%s", f.Name(), err.Error())
+		}
+		notes = append(notes, n)
+	}
 
-	// Query them
+	// Query / filter them
 
-	// Add to the return value
-
-	// TODO: MOVE TO LISTNOTES + READFILES + PLAN THIS OUT!!
-
-	// // ...then load notes from "active folder"
-	// files, err := util.GetFilesInDir(d)
-	// if err != nil {
-	// 	return nil, notes, err
-	// }
-	// // Read contents of file, parse into Note
-	// for _, f := range files {
-	// 	contents, err := io.ReadAll(f)
-	// 	if err != nil {
-	// 		return nil, notes, err
-	// 	}
-	// 	notes[]
-	// }
-	return nil, nil
+	return notes, nil
 }
 
 // Load note from disk by guid ID

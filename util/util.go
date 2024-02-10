@@ -2,7 +2,9 @@
 package util
 
 import (
+	"fmt"
 	"os"
+	"path/filepath"
 	"testing"
 
 	"github.com/gomarkdown/markdown"
@@ -55,11 +57,10 @@ func GetFilesInDir(d string) ([]*os.File, error) {
 
 	// Return files from filenames
 	for _, file := range filenames {
-		f, err := os.Open(file)
+		f, err := os.Open(filepath.Join(d + "/" + file))
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("failed to open %s, err:%s", file, err.Error())
 		}
-		defer f.Close()
 		files = append(files, f)
 	}
 	return files, nil
