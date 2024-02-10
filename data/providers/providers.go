@@ -1,33 +1,36 @@
-// crud_provider.go = Create, Read, Update, Delete Providers.
+// providers.go = Create, Read, Update, Delete Providers.
 // More funcs are available than just CRUD...
 // example of a provider: file, google drive, etc.
-package data
+package providers
 
-import "github.com/beevik/guid"
+import (
+	"github.com/beevik/guid"
+	"github.com/ssebs/padpal-server/data"
+)
 
 // Interface for CRUD stuff, if you want to save / load / update a file then use this.
 // If you want to add your own storage mechanism, implement this.
 type CRUDProvider interface {
 	// CREATE //
 	// Save note to disk
-	SaveNote(note *Note) error
+	SaveNote(note *data.Note) error
 	// TODO: CopyNote(id guid.Guid) error
 
 	// READ //
 	// List all active notes
-	ListNotes(query string) ([]*Note, error)
+	ListNotes(query string) ([]*data.Note, error)
 	// Load note from disk by guid ID
-	LoadNote(id guid.Guid) (*Note, error)
+	LoadNote(id guid.Guid) (*data.Note, error)
 	// List all versions of a note
 	ListNoteVersions(id guid.Guid) ([]int, error)
 	// Load note from disk by guid ID + version
-	LoadNoteVersion(id guid.Guid, version int) (*Note, error)
+	LoadNoteVersion(id guid.Guid, version int) (*data.Note, error)
 
 	// UPDATE //
 	// Update note to given data, append version #
-	UpdateNote(id guid.Guid, updatedNote *Note) error
+	UpdateNote(id guid.Guid, updatedNote *data.Note) error
 	// Restore a Note to a specific version, append version #
-	RestoreNote(id guid.Guid, version int) (*Note, error)
+	RestoreNote(id guid.Guid, version int) (*data.Note, error)
 
 	// DELETE //
 	// Delete a note (archive it)

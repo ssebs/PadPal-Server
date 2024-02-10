@@ -1,5 +1,5 @@
 // file_provider.go - implement file based CRUDProvider
-package data
+package providers
 
 import (
 	"os"
@@ -7,6 +7,7 @@ import (
 	"sync"
 
 	"github.com/beevik/guid"
+	"github.com/ssebs/padpal-server/data"
 	"github.com/ssebs/padpal-server/vc"
 )
 
@@ -14,7 +15,7 @@ import (
 type FileProvider struct {
 	fullPath string
 	vc       *vc.VersionControl
-	notes    map[guid.Guid]*Note
+	notes    map[guid.Guid]*data.Note
 	mutex    sync.RWMutex
 }
 
@@ -35,7 +36,7 @@ func NewFileProvider(dir string) (*FileProvider, error) {
 
 	fp := &FileProvider{
 		fullPath: d,
-		notes:    make(map[guid.Guid]*Note),
+		notes:    make(map[guid.Guid]*data.Note),
 		vc:       _vc,
 	}
 	// TODO: load notes in ListNotes/LoadNotes
@@ -44,7 +45,7 @@ func NewFileProvider(dir string) (*FileProvider, error) {
 
 // CREATE //
 // Save note to disk, under p.fullPath/active/<file>.md
-func (p *FileProvider) SaveNote(note *Note) error {
+func (p *FileProvider) SaveNote(note *data.Note) error {
 	p.mutex.Lock()
 	defer p.mutex.Unlock()
 
@@ -75,7 +76,7 @@ func (p *FileProvider) SaveNote(note *Note) error {
 
 // READ //
 // List all active notes
-func (p *FileProvider) ListNotes(query string) ([]*Note, error) {
+func (p *FileProvider) ListNotes(query string) ([]*data.Note, error) {
 	// TODO: MOVE TO LISTNOTES + READFILES + PLAN THIS OUT!!
 
 	// // ...then load notes from "active folder"
@@ -95,7 +96,7 @@ func (p *FileProvider) ListNotes(query string) ([]*Note, error) {
 }
 
 // Load note from disk by guid ID
-func (p *FileProvider) LoadNote(id guid.Guid) (*Note, error) {
+func (p *FileProvider) LoadNote(id guid.Guid) (*data.Note, error) {
 	return nil, nil
 }
 
@@ -105,18 +106,18 @@ func (p *FileProvider) ListNoteVersions(id guid.Guid) ([]int, error) {
 }
 
 // Load note from disk by guid ID + version
-func (p *FileProvider) LoadNoteVersion(id guid.Guid, version int) (*Note, error) {
+func (p *FileProvider) LoadNoteVersion(id guid.Guid, version int) (*data.Note, error) {
 	return nil, nil
 }
 
 // UPDATE //
 // Update note to given data, append version #
-func (p *FileProvider) UpdateNote(id guid.Guid, updatedNote *Note) error {
+func (p *FileProvider) UpdateNote(id guid.Guid, updatedNote *data.Note) error {
 	return nil
 }
 
 // Restore a Note to a specific version, append version #
-func (p *FileProvider) RestoreNote(id guid.Guid, version int) (*Note, error) {
+func (p *FileProvider) RestoreNote(id guid.Guid, version int) (*data.Note, error) {
 	return nil, nil
 }
 

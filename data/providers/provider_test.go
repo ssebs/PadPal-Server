@@ -1,9 +1,11 @@
 // provider_test.go - test sample_provider.go
-package data
+package providers
 
 import (
 	"reflect"
 	"testing"
+
+	"github.com/ssebs/padpal-server/data"
 )
 
 func TestCRUDProvider(t *testing.T) {
@@ -11,7 +13,7 @@ func TestCRUDProvider(t *testing.T) {
 	_author := "Test Author"
 	_contents := "Test Contents"
 
-	note := NewNote(_title, _author, _contents)
+	note := data.NewNote(_title, _author, _contents)
 
 	// Initialize the SampleProvider for testing
 	sampleProvider := NewSampleProvider()

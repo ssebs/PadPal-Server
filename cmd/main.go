@@ -5,13 +5,15 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/ssebs/padpal-server/api"
 	"github.com/ssebs/padpal-server/data"
+	"github.com/ssebs/padpal-server/data/providers"
 )
 
 func main() {
 	fmt.Println("PadPal Server")
 
-	provider2, err := data.NewFileProvider(`F:\LocalProgramming\_DATA_TEST_\example`)
+	provider2, err := providers.NewFileProvider(`F:\LocalProgramming\_DATA_TEST_\example`)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -21,5 +23,5 @@ func main() {
 		log.Fatal(err)
 	}
 
-	// api.HandleAndServe("", 5000)
+	api.HandleAndServe("", 5000)
 }

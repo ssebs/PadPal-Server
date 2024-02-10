@@ -1,5 +1,5 @@
 // sample_provider.go
-package data
+package providers
 
 import (
 	"errors"
@@ -9,23 +9,24 @@ import (
 	"time"
 
 	"github.com/beevik/guid"
+	"github.com/ssebs/padpal-server/data"
 )
 
 // SampleProvider is an in-memory implementation of CRUDProvider
 type SampleProvider struct {
-	notes map[guid.Guid]*Note
+	notes map[guid.Guid]*data.Note
 	mutex sync.RWMutex
 }
 
 // NewSampleProvider creates a new SampleProvider instance
 func NewSampleProvider() *SampleProvider {
 	return &SampleProvider{
-		notes: make(map[guid.Guid]*Note),
+		notes: make(map[guid.Guid]*data.Note),
 	}
 }
 
 // SaveNote saves a note to the in-memory provider
-func (p *SampleProvider) SaveNote(note *Note) error {
+func (p *SampleProvider) SaveNote(note *data.Note) error {
 	p.mutex.Lock()
 	defer p.mutex.Unlock()
 
@@ -41,11 +42,11 @@ func (p *SampleProvider) SaveNote(note *Note) error {
 
 // ListNotes lists all active notes that match the query
 // Errors if there are no notes found
-func (p *SampleProvider) ListNotes(query string) ([]*Note, error) {
+func (p *SampleProvider) ListNotes(query string) ([]*data.Note, error) {
 	p.mutex.RLock()
 	defer p.mutex.RUnlock()
 
-	var result []*Note
+	var result []*data.Note
 	query = strings.ToLower(query)
 
 	// Do the query
@@ -65,7 +66,7 @@ func (p *SampleProvider) ListNotes(query string) ([]*Note, error) {
 }
 
 // LoadNote loads a note from the in-memory provider by ID
-func (p *SampleProvider) LoadNote(id guid.Guid) (*Note, error) {
+func (p *SampleProvider) LoadNote(id guid.Guid) (*data.Note, error) {
 	p.mutex.RLock()
 	defer p.mutex.RUnlock()
 
@@ -83,12 +84,12 @@ func (p *SampleProvider) ListNoteVersions(id guid.Guid) ([]int, error) {
 }
 
 // LoadNoteVersion loads a specific version of a note by ID and version number
-func (p *SampleProvider) LoadNoteVersion(id guid.Guid, version int) (*Note, error) {
+func (p *SampleProvider) LoadNoteVersion(id guid.Guid, version int) (*data.Note, error) {
 	return nil, errors.New("method not implemented")
 }
 
 // UpdateNote updates a note in the in-memory provider
-func (p *SampleProvider) UpdateNote(id guid.Guid, updatedNote *Note) error {
+func (p *SampleProvider) UpdateNote(id guid.Guid, updatedNote *data.Note) error {
 	p.mutex.Lock()
 	defer p.mutex.Unlock()
 
@@ -107,7 +108,7 @@ func (p *SampleProvider) UpdateNote(id guid.Guid, updatedNote *Note) error {
 }
 
 // RestoreNote restores a Note to a specific version, append version #
-func (p *SampleProvider) RestoreNote(id guid.Guid, version int) (*Note, error) {
+func (p *SampleProvider) RestoreNote(id guid.Guid, version int) (*data.Note, error) {
 	return nil, errors.New("method not implemented")
 }
 
@@ -128,9 +129,9 @@ func (p *SampleProvider) DeleteNote(id guid.Guid) error {
 
 // OLD
 // GetSampleNotes will return sample notes
-func GetSampleNotes() []Note {
+func GetSampleNotes() []data.Note {
 	_now := time.Now().UTC()
-	notes := []Note{
+	notes := []data.Note{
 		{Title: "firstTitle", Contents: "# First Note!\nTest\n- Foo\n- Bar", Author: "Seb",
 			LastUpdated: _now, Version: 1, Active: true, ID: guid.New()},
 		{Title: "secondTitle", Contents: "# Second Note!\nTest\n- one\n- two", Author: "Seb",
