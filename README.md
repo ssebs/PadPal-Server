@@ -15,7 +15,7 @@ This repo is a part of a larger PadPal project. The following is a list of the r
 
 ## Progress
 > keeping track of where I am / whats next to code / PM stuff
-
+- [ ] FIX PUT FILE DUPE
 - [x] Create REST server
 - [ ] MOVE TO /api
   - [x] GET /

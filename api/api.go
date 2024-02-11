@@ -33,6 +33,7 @@ func initHandlers(router *gin.Engine, provider providers.CRUDProvider) {
 	// Notes handlers
 	router.GET("/notes", routes.GETNotesHandler(provider))
 	router.GET("/notes/:id", routes.GETNoteByIDHandler(provider))
+	router.PUT("/notes/:id", routes.PUTNoteHandler(provider))
 	router.POST("/notes", routes.POSTNotesHandler(provider))
 
 }

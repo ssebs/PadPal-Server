@@ -138,7 +138,16 @@ func (p *FileProvider) UpdateNote(id guid.Guid, updatedNote *data.Note) error {
 	p.mutex.Lock()
 	defer p.mutex.Unlock()
 
-	return errors.New("method not implemented")
+	// TODO: see if there anything else we should do
+	// ...bump version?
+
+	fullFileName := filepath.Join(p.dirPath + "/" + filepath.Clean(updatedNote.GetFilename()))
+
+	// save md file to disk (need fullpath)
+	if err := os.WriteFile(fullFileName, []byte(updatedNote.Contents), 0644); err != nil {
+		return err
+	}
+	return nil
 }
 
 // Restore a Note to a specific version, append version #
@@ -151,5 +160,13 @@ func (p *FileProvider) RestoreNote(id guid.Guid, version int) (*data.Note, error
 func (p *FileProvider) DeleteNote(id guid.Guid) error {
 	p.mutex.Lock()
 	defer p.mutex.Unlock()
-	return errors.New("method not implemented")
+
+	// Check if the GUID is in the map
+	note, ok := p.notes[id]
+	if !ok {
+		return fmt.Errorf("id not found: %s", id.String())
+	}
+	src := filepath.Join(p.dirPath, note.GetFilename())
+	dst := filepath.Join(p.dirPath, "/archive/", note.GetFilename())
+	return os.Rename(src, dst)
 }

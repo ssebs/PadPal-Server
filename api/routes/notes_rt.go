@@ -3,6 +3,7 @@ package routes
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/beevik/guid"
 	"github.com/gin-gonic/gin"
@@ -92,6 +93,56 @@ func POSTNotesHandler(provider providers.CRUDProvider) gin.HandlerFunc {
 // To be used in gin's router.PUT()
 func PUTNoteHandler(provider providers.CRUDProvider) gin.HandlerFunc {
 	return func(c *gin.Context) {
+		// Parse id as GUID if possible
+		id, err := guid.ParseString(c.Param("id"))
+		if err != nil {
+			ErrorHandler(400, fmt.Errorf("invalid id given, could not convert to guid: err: %s", err), c)
+			return
+		}
+		// Then get the note from that GUID & return
+		n, err := provider.LoadNote(*id)
+		if err != nil {
+			ErrorHandler(404, err, c)
+			return
+		}
+		// copy the data
+		note := *n
+
+		// Get what fields were updated and update them
+
+		// Map post data to NoteBind, then create Note from that
+		var nb data.NoteBind
+		if err := c.ShouldBind(&nb); err != nil {
+			ErrorHandler(400, err, c)
+			return
+		}
+
+		// Compare data & update if needed
+		if nb.Title != "" && note.Title != nb.Title {
+			note.Title = nb.Title
+			// TODO: if title is changed, the file get's duplicated..
+			// TODO: delete the old file
+		}
+		if nb.Author != "" && note.Author != nb.Author {
+			note.Author = nb.Author
+		}
+		if nb.Contents != "" && note.Contents != nb.Contents {
+			note.Contents = nb.Contents
+		}
+		note.LastUpdated = time.Now().UTC()
+
+		// Update on the FS
+		// del note
+		if err = provider.DeleteNote(*note.ID); err != nil {
+			ErrorHandler(500, err, c)
+		}
+		// save new one
+		err = provider.UpdateNote(*note.ID, &note)
+		if err != nil {
+			ErrorHandler(400, err, c)
+		}
+
+		c.JSON(201, note)
 	}
 }
 
