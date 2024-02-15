@@ -77,6 +77,15 @@ func POSTNotesHandler(provider providers.CRUDProvider) gin.HandlerFunc {
 			ErrorHandler(400, err, c)
 			return
 		}
+		// Validate incoming data
+		if err := validateNoteBind(nb); err != nil {
+			c.JSON(400, map[string]string{
+				"error": err.Error(),
+			})
+			return
+		}
+
+		// Create note from the incoming data
 		note := data.NewNoteFromBind(nb)
 
 		// Save the new note
@@ -87,6 +96,20 @@ func POSTNotesHandler(provider providers.CRUDProvider) gin.HandlerFunc {
 		}
 		c.JSON(201, note)
 	}
+}
+
+// validateNoteBind will validate the incoming data from an HTTP request
+// returns an error
+// TODO: support combining multiple errors
+func validateNoteBind(nb data.NoteBind) error {
+	if nb.Author == "" {
+		return fmt.Errorf("%s is missing the author field", nb)
+	}
+	if nb.Title == "" {
+		return fmt.Errorf("%s is missing the title field", nb)
+	}
+
+	return nil
 }
 
 // PUT //

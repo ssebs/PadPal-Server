@@ -13,6 +13,8 @@ This repo is a part of a larger PadPal project. The following is a list of the r
 ## Usage
 > TODO: replace this section once the project is up and running
 
+Test REST: https://hoppscotch.io/
+
 ## Progress
 > keeping track of where I am / whats next to code / PM stuff
 - [ ] FIX PUT FILE DUPE

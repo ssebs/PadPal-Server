@@ -65,6 +65,8 @@ func (p *FileProvider) SaveNote(note *data.Note) error {
 		return err
 	}
 
+	p.notes[*note.ID] = note
+
 	// TODO: git add & commit
 
 	return nil

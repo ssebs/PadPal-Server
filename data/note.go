@@ -23,6 +23,10 @@ type NoteBind struct {
 	Author   string `json:"author"`
 }
 
+func (nb NoteBind) String() string {
+	return fmt.Sprintf("Title: %s, Author: %s, Contents: %s", nb.Title, nb.Author, nb.Contents)
+}
+
 // Note
 // ID is a GUID
 // LastUpdated is a time.Time in UTC
