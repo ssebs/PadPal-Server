@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 	"sync"
 
 	"github.com/beevik/guid"
@@ -40,12 +41,18 @@ func NewFileProvider(dir string) (*FileProvider, error) {
 	// load notes in LoadNotes
 	notes, err := fp.LoadNotes("")
 	if err != nil {
-		return fp, err
+		return fp, fmt.Errorf("failed to load notes. err: %s", err.Error())
 	}
 
 	// add notes to the map of notes from the GUID
 	for _, n := range notes {
 		fp.notes[*n.ID] = n
+	}
+
+	// Make sure archive/ dir exists
+
+	if err = os.MkdirAll(filepath.Join(d, "/archive/"), os.ModePerm); err != nil {
+		fmt.Println(err)
 	}
 
 	return fp, nil
@@ -91,6 +98,11 @@ func (p *FileProvider) LoadNotes(query string) ([]*data.Note, error) {
 	}
 	// Parse the file and add to notes
 	for _, f := range files {
+		// Only parse .md files!
+		if !strings.HasSuffix(f.Name(), ".md") {
+			continue
+		}
+
 		n, err := data.NewNoteFromFile(f)
 		if err != nil {
 			return nil, fmt.Errorf("failed to parse note from file %s, err:%s", f.Name(), err.Error())
@@ -149,6 +161,7 @@ func (p *FileProvider) UpdateNote(id guid.Guid, updatedNote *data.Note) error {
 	if err := os.WriteFile(fullFileName, []byte(updatedNote.Contents), 0644); err != nil {
 		return err
 	}
+	p.notes[id] = updatedNote
 	return nil
 }
 

@@ -98,20 +98,6 @@ func POSTNotesHandler(provider providers.CRUDProvider) gin.HandlerFunc {
 	}
 }
 
-// validateNoteBind will validate the incoming data from an HTTP request
-// returns an error
-// TODO: support combining multiple errors
-func validateNoteBind(nb data.NoteBind) error {
-	if nb.Author == "" {
-		return fmt.Errorf("%s is missing the author field", nb)
-	}
-	if nb.Title == "" {
-		return fmt.Errorf("%s is missing the title field", nb)
-	}
-
-	return nil
-}
-
 // PUT //
 // To be used in gin's router.PUT()
 func PUTNoteHandler(provider providers.CRUDProvider) gin.HandlerFunc {
@@ -140,6 +126,15 @@ func PUTNoteHandler(provider providers.CRUDProvider) gin.HandlerFunc {
 			return
 		}
 
+		// Validate incoming data
+		// doesn't work for PUT since we want to check specific fields
+		// if err := validateNoteBind(nb); err != nil {
+		// 	c.JSON(400, map[string]string{
+		// 		"error": err.Error(),
+		// 	})
+		// 	return
+		// }
+
 		// Compare data & update if needed
 		if nb.Title != "" && note.Title != nb.Title {
 			note.Title = nb.Title
@@ -156,7 +151,7 @@ func PUTNoteHandler(provider providers.CRUDProvider) gin.HandlerFunc {
 
 		// Update on the FS
 		// del note
-		if err = provider.DeleteNote(*note.ID); err != nil {
+		if err = provider.DeleteNote(*n.ID); err != nil {
 			ErrorHandler(500, err, c)
 		}
 		// save new one
@@ -174,4 +169,20 @@ func PUTNoteHandler(provider providers.CRUDProvider) gin.HandlerFunc {
 func DELETENoteHandler(provider providers.CRUDProvider) gin.HandlerFunc {
 	return func(c *gin.Context) {
 	}
+}
+
+// Helpers //
+
+// validateNoteBind will validate the incoming data from an HTTP request
+// returns an error
+// TODO: support combining multiple errors
+func validateNoteBind(nb data.NoteBind) error {
+	if nb.Author == "" {
+		return fmt.Errorf("note '%s' is missing the author field", nb)
+	}
+	if nb.Title == "" {
+		return fmt.Errorf("note '%s' is missing the title field", nb)
+	}
+
+	return nil
 }

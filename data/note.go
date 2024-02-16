@@ -24,7 +24,7 @@ type NoteBind struct {
 }
 
 func (nb NoteBind) String() string {
-	return fmt.Sprintf("Title: %s, Author: %s, Contents: %s", nb.Title, nb.Author, nb.Contents)
+	return fmt.Sprintf("Title: %q, Author: %q, Contents: %q", nb.Title, nb.Author, nb.Contents)
 }
 
 // Note
