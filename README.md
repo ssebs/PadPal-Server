@@ -122,12 +122,12 @@ Test REST: https://hoppscotch.io/
     - Merge conflict? Use the server version & save local as .fix-me for now
   - For use with VSCode/vim/text editor of your choosing (MD Text only)
 - UI:
-  - Flutter mobile app
+  - React Native mobile app
     - Similar to google keep, if they have a MD text editor lib
     - Android home screen widget to view / open / create new notes like keeps'
     - WYSIWYG or MD Text (with helpers)
     - Exports for Android + Web + iOS?
-    - If flutter doesn't have a good MD WYSIWYG editor
+    - If React Native doesn't have a good MD WYSIWYG editor
     - JS lib for editing, material-ui for viewing what files you have, etc.
     - SSO?
     - WYSIWYG or MD Text (with helpers)
